@@ -1,21 +1,30 @@
-usethis::create_package("ezpz")
+# R/cor.ezpz.R
 
-library(weights)
-library(boot)
-library(dplyr)
-
+#' Compute pairwise correlations with confidence intervals
+#'
+#' A helper function for psychologists to compute correlations,
+#' p-values, significance stars, and confidence intervals (standard and bootstrap),
+#' optionally weighted.
+#'
+#' @param data Data frame of numeric variables
+#' @param method Correlation method ("pearson", "spearman", "kendall")
+#' @param cis Logical, include confidence intervals?
+#' @param weight Optional column name for weights
+#' @param nboot Number of bootstrap samples
+#' @return A list with correlation matrices, p-values, stars, and CIs
+#' @import boot
+#' @import weights
+#' @export
 cor.ezpz <- function(data,
                      method = "pearson",
                      cis = TRUE,
                      weight = NULL,
                      nboot = 1000) {
-  library(weights)
-  library(boot)
   
   # Separate variables from weight column
   if (!is.null(weight)) {
     w <- data[[weight]]
-    vars <- setdiff(colnames(data), weight)  # exclude weight variable
+    vars <- setdiff(colnames(data), weight)
   } else {
     vars <- colnames(data)
     w <- NULL
@@ -40,20 +49,18 @@ cor.ezpz <- function(data,
   
   # loop over pairs
   for (i in 1:n) {
-    for (j in 1:i) {  # lower triangle only
-      if (i == j) next  # skip diagonal
+    for (j in 1:i) {
+      if (i == j) next
       
       x <- data[[vars[i]]]
       y <- data[[vars[j]]]
       
       if (is.null(weight)) {
-        # --- unweighted ---
         test <- suppressWarnings(cor.test(x, y, method = method))
         r <- unname(test$estimate)
         pval <- test$p.value
         ci_std <- test$conf.int
         
-        # bootstrap CIs
         boot_fun <- function(d, idx) {
           cor(d[idx,1], d[idx,2], method = method, use = "pairwise")
         }
@@ -64,13 +71,11 @@ cor.ezpz <- function(data,
         }, error = function(e) NA)
         
       } else {
-        # --- weighted ---
         wc <- suppressWarnings(wtd.cor(x, y, weight = w, mean1 = TRUE, bootse = FALSE))
         r <- unname(wc[1])
         pval <- unname(wc[4])
         
-        ci_std <- NA  # no analytic CI for weighted
-        # bootstrap for weighted
+        ci_std <- NA
         boot_fun <- function(d, idx) {
           wtd.cor(d[idx,1], d[idx,2], weight = d[idx,3], mean1 = TRUE)[1]
         }
@@ -81,7 +86,6 @@ cor.ezpz <- function(data,
         }, error = function(e) NA)
       }
       
-      # fill matrices
       cor_matrix[i,j] <- r
       p_matrix[i,j]   <- pval
       stars_matrix[i,j] <- assign_stars(pval)
@@ -95,9 +99,7 @@ cor.ezpz <- function(data,
     }
   }
   
-  # combine correlations and stars
-  cor_with_stars <- ifelse(is.na(cor_matrix), "",
-                           paste0(round(cor_matrix, 2), stars_matrix))
+  cor_with_stars <- ifelse(is.na(cor_matrix), "", paste0(round(cor_matrix, 2), stars_matrix))
   
   return(list(cor = cor_matrix,
               p = p_matrix,
