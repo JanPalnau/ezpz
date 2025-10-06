@@ -10,5 +10,8 @@ LazyData: true
 Imports:
     boot,
     weights,
-    dplyr
+    dplyr,
+    weights,
+    flextable,
+    officer
 RoxygenNote: 7.3.2
