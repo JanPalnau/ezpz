@@ -1,5 +1,4 @@
 # R/cor.ezpz.R
-library(weights)
 #' Compute pairwise (weighted) correlations between all columns of a dataset with (bootstrapped) confidence intervals and return matrices, including significance stars.
 #'
 #' A helper function for psychologists to compute correlations,
@@ -59,7 +58,7 @@ cor.ezpz <- function(data,
       y <- data[[vars[j]]]
 
       if (is.null(weight)) {
-        test <- cor.test(x, y, method = method)
+        test <- stats::cor.test(x, y, method = method)
         r <- unname(test$estimate)
         pval <- test$p.value
         ci_std <- test$conf.int
@@ -74,7 +73,7 @@ cor.ezpz <- function(data,
         }, error = function(e) NA)
 
       } else {
-        wc <- wtd.cor(x, y, weight = data[[weight]], mean1 = TRUE, bootse = FALSE)
+        wc <- weights::wtd.cor(x, y, weight = data[[weight]], mean1 = TRUE, bootse = FALSE)
         r <- unname(wc[1])
         pval <- unname(wc[4])
 
