@@ -2,7 +2,7 @@
 
 #' Compute pairwise correlations with confidence intervals
 #'
-#' A helper function for psychologists to compute correlations,
+#' A helper function for psychologists to compute correlation matrices with
 #' p-values, significance stars, and confidence intervals (standard and bootstrap),
 #' optionally weighted.
 #'
