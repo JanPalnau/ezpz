@@ -1,8 +1,8 @@
 # R/cor.ezpz.R
 
-#' Compute pairwise correlations with confidence intervals
+#' Compute pairwise correlations with (bootstrapped) confidence intervals
 #'
-#' A helper function for psychologists to compute correlation matrices with
+#' A helper function to compute correlation matrices with
 #' p-values, significance stars, and confidence intervals (standard and bootstrap),
 #' optionally weighted.
 #'
