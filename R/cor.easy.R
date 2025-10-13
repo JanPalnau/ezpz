@@ -1,4 +1,4 @@
-# R/cor.ezpz2.R
+# R/cor.easy.R
 #' Compute pairwise (weighted) correlations between all columns of a dataset with (bootstrapped) confidence intervals and return matrices, including significance stars.
 #'
 #' A helper function for psychologists to compute correlations,
@@ -16,7 +16,7 @@
 #' @import boot
 #' @import weights
 #' @export
-cor.ezpz2 <- function(data,
+cor.easy <- function(data,
                      method = "pearson",
                      cis = TRUE,
                      weight = NULL,
