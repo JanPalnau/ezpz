@@ -1,4 +1,4 @@
-# R/cor.ezpz.R
+# R/cor.ezpz2.R
 #' Compute pairwise (weighted) correlations between all columns of a dataset with (bootstrapped) confidence intervals and return matrices, including significance stars.
 #'
 #' A helper function for psychologists to compute correlations,
