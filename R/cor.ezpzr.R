@@ -21,7 +21,7 @@ cor.ezpzr <- function(data,
                      cis = TRUE,
                      weight = NULL,
                      nboot = 1000,
-                     correction = "none",
+                     correction = c("none", "bonferroni", "fdr"),
                      alpha = 0.05) {
 
   correction <- match.arg(correction)
