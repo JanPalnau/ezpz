@@ -9,18 +9,19 @@
 #' @param conf Confidence level (default = 0.95)
 #' @param adjust Logical; whether to apply Bonferroni correction (default = FALSE)
 #' @param include_intercept Logical; include intercept (default = TRUE)
-#' @param ... Additional arguments passed to `lm_boot`
+#' @param ... Additional arguments passed to `boot_function`
 #'
 #' @return A data.frame with term, lower, and upper CI bounds
 #'
 #' @examples
 #' \dontrun{
-#' lm_boot_ci(data = df, formula = y ~ x1 + x2)
+#' lm.boot.ci(data = df, formula = y ~ x1 + x2)
 #' }
 #'
 #' @export
 lm.boot.ci <- function(data,
                        formula,
+                       boot_function,
                        R = 5000,
                        conf = 0.95,
                        adjust = FALSE,
@@ -39,7 +40,7 @@ lm.boot.ci <- function(data,
   # --- Run bootstrap ---
   boot_out <- boot::boot(
     data = data,
-    statistic = lm_boot,
+    statistic = boot_function,
     R = R,
     formula = formula,
     include_intercept = include_intercept,

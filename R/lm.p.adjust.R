@@ -14,10 +14,10 @@
 #' model <- lm(mpg ~ wt + hp, data = mtcars)
 #'
 #' # Adjust all predictors
-#' lm_adjust(model, method = "holm")
+#' lm.p.adjust(model, method = "holm")
 #'
 #' # Adjust only specific terms
-#' lm_adjust(model, terms = c("wt", "hp"))
+#' lm.p.adjust(model, terms = c("wt", "hp"))
 #'
 #' @export
 lm.p.adjust <- function(model,

@@ -40,7 +40,7 @@ argument. Standardization is performed within each bootstrap sample.
 \examples{
 \dontrun{
 library(boot)
-boot_out <- boot(data = df, statistic = lm_boot, R = 1000,
+boot_out <- boot(data = df, statistic = lm.boot, R = 1000,
                  formula = y ~ x1 + x2)
 }
 

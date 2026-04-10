@@ -7,6 +7,7 @@
 lm.boot.ci(
   data,
   formula,
+  boot_function,
   R = 5000,
   conf = 0.95,
   adjust = FALSE,
@@ -27,7 +28,7 @@ lm.boot.ci(
 
 \item{include_intercept}{Logical; include intercept (default = TRUE)}
 
-\item{...}{Additional arguments passed to `lm_boot`}
+\item{...}{Additional arguments passed to `boot_function`}
 }
 \value{
 A data.frame with term, lower, and upper CI bounds
@@ -38,7 +39,7 @@ standardized regression coefficients using `boot::boot()`.
 }
 \examples{
 \dontrun{
-lm_boot_ci(data = df, formula = y ~ x1 + x2)
+lm.boot.ci(data = df, formula = y ~ x1 + x2)
 }
 
 }

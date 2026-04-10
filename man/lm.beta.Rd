@@ -36,7 +36,7 @@ df <- data.frame(
   group = factor(sample(letters[1:2], 100, TRUE))
 )
 
-model <- lm_std(y ~ x1 + x2 + group, data = df)
+model <- lm.beta(y ~ x1 + x2 + group, data = df)
 summary(model)
 
 }
