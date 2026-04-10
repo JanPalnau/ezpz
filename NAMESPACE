@@ -2,6 +2,8 @@
 
 export(cor.ezpzr)
 export(lm.beta)
+export(lm.boot)
+export(lm.boot.ci)
 export(lm.p.adjust)
 export(table.ezpz)
 import(boot)
