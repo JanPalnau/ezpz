@@ -2,20 +2,23 @@
 #'
 #' Computes bootstrapped confidence intervals (percentile method) for
 #' standardized regression coefficients using `boot::boot()`.
+#' Optionally includes bootstrapped R-squared.
 #'
 #' @param data A data.frame
 #' @param formula A model formula
+#' @param boot_function Function used in bootstrapping (must return coefficients)
 #' @param R Number of bootstrap resamples (default = 5000)
 #' @param conf Confidence level (default = 0.95)
 #' @param adjust Logical; whether to apply Bonferroni correction (default = FALSE)
 #' @param include_intercept Logical; include intercept (default = TRUE)
+#' @param include_r2 Logical; whether to include bootstrapped R² (default = FALSE)
 #' @param ... Additional arguments passed to `boot_function`
 #'
 #' @return A data.frame with term, lower, and upper CI bounds
 #'
 #' @examples
 #' \dontrun{
-#' lm.boot.ci(data = df, formula = y ~ x1 + x2)
+#' lm.boot.ci(data = df, formula = y ~ x1 + x2, boot_function = lm_boot)
 #' }
 #'
 #' @export
@@ -26,6 +29,7 @@ lm.boot.ci <- function(data,
                        conf = 0.95,
                        adjust = FALSE,
                        include_intercept = TRUE,
+                       include_r2 = FALSE,
                        ...) {
 
   # --- Input checks ---
@@ -37,7 +41,7 @@ lm.boot.ci <- function(data,
     stop("`formula` must be a formula.")
   }
 
-  # --- Run bootstrap ---
+  # --- Run bootstrap for coefficients ---
   boot_out <- boot::boot(
     data = data,
     statistic = boot_function,
@@ -58,7 +62,7 @@ lm.boot.ci <- function(data,
     conf_adj <- conf
   }
 
-  # --- Compute CIs ---
+  # --- Compute coefficient CIs ---
   ci_mat <- t(sapply(seq_len(n_coefs), function(i) {
     ci <- boot::boot.ci(
       boot_out,
@@ -67,7 +71,6 @@ lm.boot.ci <- function(data,
       conf = conf_adj
     )
 
-    # Handle potential NULL (rare but possible)
     if (is.null(ci$percent)) {
       return(c(NA, NA))
     }
@@ -82,6 +85,34 @@ lm.boot.ci <- function(data,
     CI_upper = ci_mat[, 2],
     row.names = NULL
   )
+
+  # --- Optionally compute R² ---
+  if (include_r2) {
+
+    boot_r2_fn <- function(data, indices, formula) {
+      d <- data[indices, ]
+      fit <- lm(formula, data = d)
+      summary(fit)$r.squared
+    }
+
+    boot_r2 <- boot::boot(
+      data = data,
+      statistic = boot_r2_fn,
+      R = R,
+      formula = formula
+    )
+
+    probs <- c((1 - conf) / 2, 1 - (1 - conf) / 2)
+    r2_ci <- quantile(boot_r2$t, probs = probs, na.rm = TRUE)
+
+    r2_row <- data.frame(
+      term = "R2",
+      CI_lower = r2_ci[1],
+      CI_upper = r2_ci[2]
+    )
+
+    out <- rbind(out, r2_row)
+  }
 
   return(out)
 }

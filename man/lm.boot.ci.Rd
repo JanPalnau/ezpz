@@ -12,6 +12,7 @@ lm.boot.ci(
   conf = 0.95,
   adjust = FALSE,
   include_intercept = TRUE,
+  include_r2 = FALSE,
   ...
 )
 }
@@ -19,6 +20,8 @@ lm.boot.ci(
 \item{data}{A data.frame}
 
 \item{formula}{A model formula}
+
+\item{boot_function}{Function used in bootstrapping (must return coefficients)}
 
 \item{R}{Number of bootstrap resamples (default = 5000)}
 
@@ -28,6 +31,8 @@ lm.boot.ci(
 
 \item{include_intercept}{Logical; include intercept (default = TRUE)}
 
+\item{include_r2}{Logical; whether to include bootstrapped R² (default = FALSE)}
+
 \item{...}{Additional arguments passed to `boot_function`}
 }
 \value{
@@ -36,10 +41,11 @@ A data.frame with term, lower, and upper CI bounds
 \description{
 Computes bootstrapped confidence intervals (percentile method) for
 standardized regression coefficients using `boot::boot()`.
+Optionally includes bootstrapped R-squared.
 }
 \examples{
 \dontrun{
-lm.boot.ci(data = df, formula = y ~ x1 + x2)
+lm.boot.ci(data = df, formula = y ~ x1 + x2, boot_function = lm_boot)
 }
 
 }
